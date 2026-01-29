@@ -1,5 +1,5 @@
 provider "google" {
   project     = var.project_id
   region      = var.region
-  credentials = file("${var.credentials}")
+  credentials = var.credentials != null ? file(var.credentials) : null
 }
