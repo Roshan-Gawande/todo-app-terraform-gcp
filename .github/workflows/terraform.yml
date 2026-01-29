@@ -1,0 +1,66 @@
+name: 'Terraform Deployment'
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: 'ubuntu-latest'
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: 'Checkout'
+      uses: 'actions/checkout@v4'
+
+    - name: 'Authenticate to GCP'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: 'Setup Terraform'
+      uses: 'hashicorp/setup-terraform@v3'
+
+    - name: 'Terraform Init'
+      run: 'terraform init'
+
+    - name: 'Terraform Plan'
+      run: 'terraform plan -no-color'
+      env:
+        TF_VAR_project_id: "${{ secrets.TF_VAR_project_id }}"
+        TF_VAR_database_name: "${{ secrets.TF_VAR_database_name }}"
+        TF_VAR_database_user: "${{ secrets.TF_VAR_database_user }}"
+        TF_VAR_database_password: "${{ secrets.TF_VAR_database_password }}"
+        TF_VAR_github_repo_url: "${{ secrets.TF_VAR_github_repo_url }}"
+        TF_VAR_authorized_network_ip: "${{ secrets.TF_VAR_authorized_network_ip }}"
+        TF_VAR_backend_vm_name: "${{ secrets.TF_VAR_backend_vm_name }}"
+        TF_VAR_backend_machine_type: "${{ secrets.TF_VAR_backend_machine_type }}"
+        TF_VAR_backend_image: "${{ secrets.TF_VAR_backend_image }}"
+        TF_VAR_frontend_vm_name: "${{ secrets.TF_VAR_frontend_vm_name }}"
+        TF_VAR_frontend_machine_type: "${{ secrets.TF_VAR_frontend_machine_type }}"
+        TF_VAR_frontend_image: "${{ secrets.TF_VAR_frontend_image }}"
+
+    - name: 'Terraform Apply'
+      run: 'terraform apply -auto-approve -no-color'
+      env:
+        TF_VAR_project_id: "${{ secrets.TF_VAR_project_id }}"
+        TF_VAR_database_name: "${{ secrets.TF_VAR_database_name }}"
+        TF_VAR_database_user: "${{ secrets.TF_VAR_database_user }}"
+        TF_VAR_database_password: "${{ secrets.TF_VAR_database_password }}"
+        TF_VAR_github_repo_url: "${{ secrets.TF_VAR_github_repo_url }}"
+        TF_VAR_authorized_network_ip: "${{ secrets.TF_VAR_authorized_network_ip }}"
+        TF_VAR_backend_vm_name: "${{ secrets.TF_VAR_backend_vm_name }}"
+        TF_VAR_backend_machine_type: "${{ secrets.TF_VAR_backend_machine_type }}"
+        TF_VAR_backend_image: "${{ secrets.TF_VAR_backend_image }}"
+        TF_VAR_frontend_vm_name: "${{ secrets.TF_VAR_frontend_vm_name }}"
+        TF_VAR_frontend_machine_type: "${{ secrets.TF_VAR_frontend_machine_type }}"
+        TF_VAR_frontend_image: "${{ secrets.TF_VAR_frontend_image }}"
