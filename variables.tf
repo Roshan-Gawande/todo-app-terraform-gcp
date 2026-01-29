@@ -14,6 +14,8 @@ variable "zone" {
 
 variable "credentials" {
   description = "The path to the service account key file"
+  type        = string
+  default     = null
 }
 
 variable "authorized_network_ip" {
